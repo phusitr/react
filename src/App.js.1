@@ -5,36 +5,39 @@ import HeatmapLayer from "react-leaflet-heatmap-layer";
 import "leaflet/dist/leaflet.css";
 import "./styles.css";
 
-//import { addressPoints } from "./data.js";
+import { addressPoints } from "./data.js";
 
 class App extends React.Component {
   state = {
     mapHidden: false,
     layerHidden: false,
-    addressPoints: [],
+    addressPoints,
     radius: 12,
     blur: 5,
     max: 0.5,
     limitAddressPoints: false
   };
-  
-  async componentDidMount()
-  {
-  	this.getData ();
-  }
 
-  getData ()
-  {
-	this.setState({
-	     addressPoints:  [
-        	[16.282820, 99.942230, "486"],
-        	[16.642805, 99.565186, "807"],
-        	[16.772568 ,99.405617, "899"]
-     	     ]});
+  /**
+   * Toggle limiting the address points to test behavior with refocusing/zooming when data points change
+   */
+  toggleLimitedAddressPoints() {
+    if (this.state.limitAddressPoints) {
+      this.setState({
+        addressPoints: addressPoints.slice(0, 250),
+        //addressPoints2: addressPoints2.slice(0, 250),
+        limitAddressPoints: false
+      });
+    } else {
+      this.setState({
+        addressPoints,
+        //addressPoints2,
+        limitAddressPoints: true
+      });
+    }
   }
 
   render() {
-
     const gradient = {
       0.1: "#89BDE0",
       0.2: "#96E3E6",
@@ -69,6 +72,7 @@ class App extends React.Component {
             )}
             <TileLayer
               url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
           </Map>
         </div>
